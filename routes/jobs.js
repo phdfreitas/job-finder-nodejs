@@ -2,8 +2,8 @@ const express = require('express')
 const router = express.Router()
 const Job = require('../models/Job')
 
-router.get('/test', (req, res) => {
-    res.send('Ok')
+router.get('/newJob', (req, res) => {
+    res.render('add')
 })
 
 router.post('/newJob', (request, response) => {
