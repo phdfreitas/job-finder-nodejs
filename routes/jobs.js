@@ -6,6 +6,18 @@ router.get('/newJob', (req, res) => {
     res.render('add')
 })
 
+router.get('/view/:id', (req, res) => {
+    Job.findOne({
+        where: {id: req.params.id}
+    })
+    .then(job => {
+        res.render('view', {
+            job
+        })
+    })
+    .catch(err => console.log(err))
+})
+
 router.post('/newJob', (request, response) => {
 
     let {title, salary, company, job_description, email, status} = request.body;
