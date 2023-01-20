@@ -4,6 +4,7 @@ const app = express()
 const path = require('path')
 const db = require('./db/connection')
 const bodyParser = require('body-parser')
+const Job = require('./models/Job')
 
 const PORT = 3000;
 
@@ -27,7 +28,14 @@ db.authenticate().then(() =>
     })
 
 app.get('/', (request, response) => {
-    response.render('index')
+    Job.findAll({order: [
+        ['createdAt']
+    ]})
+    .then(jobs => {
+        response.render('index', {
+            jobs
+        })
+    })
 })
 
 app.use('/jobs', require('./routes/jobs'))
