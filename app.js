@@ -38,7 +38,7 @@ app.get('/', (request, response) => {
 
     if(!search){
         Job.findAll({order: [
-            ['createdAt']
+            ['createdAt', 'DESC']
         ]})
         .then(jobs => {
             response.render('index', {
