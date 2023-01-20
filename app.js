@@ -6,6 +6,10 @@ const db = require('./db/connection')
 const bodyParser = require('body-parser')
 const Job = require('./models/Job')
 
+const Sequelize = require('sequelize')
+const { query } = require('express')
+const Op = Sequelize.Op
+
 const PORT = 3000;
 
 app.listen(PORT, function() {
@@ -28,14 +32,34 @@ db.authenticate().then(() =>
     })
 
 app.get('/', (request, response) => {
-    Job.findAll({order: [
-        ['createdAt']
-    ]})
-    .then(jobs => {
-        response.render('index', {
-            jobs
+    
+    let search = request.query.job
+    let query = `%${search}%`
+
+    if(!search){
+        Job.findAll({order: [
+            ['createdAt']
+        ]})
+        .then(jobs => {
+            response.render('index', {
+                jobs
+            })
         })
-    })
+        .catch(err => console.log(err))
+    }
+    else{
+        Job.findAll({
+            where: {title: {[Op.like]: query}},
+            order: [
+            ['createdAt']
+        ]})
+        .then(jobs => {
+            response.render('index', {
+                jobs, search
+            })
+        })
+        .catch(err => console.log(err))
+    }
 })
 
 app.use('/jobs', require('./routes/jobs'))
